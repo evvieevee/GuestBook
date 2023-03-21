@@ -4,14 +4,22 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
   <title>guestbook</title>
 </head>
 <body>
   <h1>guestbook</h1>
 
-  <ul id="message">
+  <table  class="pure-table">
+    <thead>
+      <tr id="headers">
 
-  </ul>
+      </tr>
+    </thead>
+    <tbody id="message">
+
+    </tbody>
+  </table>
 
   <script>
     fetch('/guestbook', {
@@ -20,15 +28,30 @@
       },
     })
       .then(response => {
-        console.log(response);
         return response.json()})
       .then(data => {
         console.log(data)
         const container = document.querySelector('#message');
-        data.forEach(message => {
-          const li = document.createElement('li');
-          li.textContent = `${message.username}`
-          container.appendChild(li);
+
+        const headers = document.querySelector('#headers');
+        const keys = Object.keys(data[0]);
+        keys.forEach((key) => {
+          const th = document.createElement('th');
+          th.textContent = `${key}`
+          headers.appendChild(th);
+        })
+
+        data.forEach((message, index) => {
+          const tr = document.createElement('tr');
+          if(index %2 === 1)tr.className = "pure-table-odd"
+          for (const [key, value] of Object.entries(message)) {
+            const td = document.createElement('td');
+            td.textContent = `${message[key]}`
+            tr.appendChild(td);
+          }
+          
+          
+          container.appendChild(tr);
         });
       })
   </script>
