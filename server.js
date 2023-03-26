@@ -1,9 +1,14 @@
 const express = require("express")
-const bodyParser = require("body-parser").json()
+const bodyParser = require("body-parser")
 const path = require("path");
 const { writeObjToJson, readJsonFile } = require("./helper");
 const app = express()
 const fs = require("fs")
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json())
 
 app.get('/', (req, res)=>{
   console.log('Here')
@@ -27,10 +32,17 @@ app.get('/guestbook', (req, res)=>{
   })
 })
 
+app.post('/newmessage', (req, res)=>{
+  console.log("post", req.body)
+  writeObjToJson(req.body);
+  res.sendStatus(201);
+})
+
 app.get('/newmessage', (req, res)=>{
-  console.log('Here')
-  //writeObjToJson();
+  console.log('Here, new message')
   res.sendFile(path.join(__dirname + "/newmessage.html"))
+  //writeObjToJson();
+  
 })
 
 app.get('/ajaxmessage', (req, res)=>{
