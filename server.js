@@ -11,7 +11,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.get('/', (req, res)=>{
-  console.log('Here')
   res.sendFile(path.join(__dirname + "/home.html"))
 })
 
@@ -35,26 +34,16 @@ app.get('/guestbook', (req, res)=>{
 app.post('/newmessage', (req, res)=>{
   console.log("post", req.body)
   writeObjToJson(req.body);
-  res.sendStatus(201);
+  res.redirect('/guestbook')
 })
 
 app.get('/newmessage', (req, res)=>{
-  console.log('Here, new message')
   res.sendFile(path.join(__dirname + "/newmessage.html"))
-  //writeObjToJson();
-  
 })
 
 app.get('/ajaxmessage', (req, res)=>{
-  console.log('Here')
   res.sendFile(path.join(__dirname + "/ajaxmessage.html"))
 }) 
-
-app.post('/', bodyParser, (req, res)=>{
-  console.log(req.body)
-  console.log(req.query)
-  res.send("nice")
-})
 
 app.listen(3000)
 
