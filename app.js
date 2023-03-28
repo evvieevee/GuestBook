@@ -4,6 +4,7 @@ const path = require("path");
 const { writeObjToJson, readJsonFile } = require("./helper");
 const app = express()
 const fs = require("fs")
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -42,5 +43,5 @@ app.get('/ajaxmessage', (req, res)=>{
   res.sendFile(path.join(__dirname + "/ajaxmessage.html")) 
 }) 
 
-app.listen(3000)
+app.listen(port)
 
