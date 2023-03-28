@@ -9,42 +9,47 @@ const fs = require("fs")
 let latestNum;
 
 function writeObjToJson(newObject) {
-  if(!newObject.date) {
-    newObject.date = new Date();
-  }
-  if(!newObject.id) {
-    if(latestNum) {
-      latestNum += 1;
-      newObject.id = latestNum;
-      fs.readFile('guestbook.json', (err, data) => {
-        if (err) throw err;
-      
-        const jsonData = JSON.parse(data);
-        jsonData.push(validateObjectKeysOrder(newObject));
-        fs.writeFile('guestbook.json', JSON.stringify(jsonData), (err) => {
-          if (err) throw err;
-          console.log("Updated")
-        })
-      });
-    }else {
-      fs.readFile('guestbook.json', (err, data) => {
-        if (err) throw err;
-      
-        const jsonData = JSON.parse(data);
-        latestNum = 0;
-        jsonData.forEach(element => {
-          if(element.id >= latestNum) latestNum = element.id;
-        });
+  return new Promise((resolve, reject) => {
+    if(!newObject.date) {
+      newObject.date = new Date();
+    }
+    if(!newObject.id) {
+      if(latestNum) {
         latestNum += 1;
         newObject.id = latestNum;
-        jsonData.push(validateObjectKeysOrder(newObject));
-        fs.writeFile('guestbook.json', JSON.stringify(jsonData), (err) => {
+        fs.readFile('guestbook.json', (err, data) => {
           if (err) throw err;
-          console.log("Updated")
-        })
-      });
+        
+          const jsonData = JSON.parse(data);
+          jsonData.push(validateObjectKeysOrder(newObject));
+          fs.writeFile('guestbook.json', JSON.stringify(jsonData), (err) => {
+            if (err) throw err;
+            console.log("Updated")
+            resolve(jsonData);
+          })
+        });
+      }else {
+        fs.readFile('guestbook.json', (err, data) => {
+          if (err) throw err;
+        
+          const jsonData = JSON.parse(data);
+          latestNum = 0;
+          jsonData.forEach(element => {
+            if(element.id >= latestNum) latestNum = element.id;
+          });
+          latestNum += 1;
+          newObject.id = latestNum;
+          jsonData.push(validateObjectKeysOrder(newObject));
+          fs.writeFile('guestbook.json', JSON.stringify(jsonData), (err) => {
+            if (err) throw err;
+            console.log("Updated");
+            resolve(jsonData);
+          })
+        });
+      }
     }
-  }
+  })
+  
   
 }
 
